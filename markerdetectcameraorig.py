@@ -1,10 +1,9 @@
 """
-This demo calculates multiple things for different scenarios.
-Here are the defined reference frames:
+
 TAG:
                 A y
                 |
-                |q
+                |
                 |tag center
                 O---------> x
 CAMERA:
@@ -13,15 +12,7 @@ CAMERA:
                 |
                 |
                 V y
-F1: Flipped (180 deg) tag frame around x axis
-F2: Flipped (180 deg) camera frame around x axis
-The attitude of a generic frame 2 respect to a frame 1 can obtained by calculating euler(R_21.T)
-We are going to obtain the following quantities:
-    > from aruco library we obtain tvec and Rct, position of the tag in camera frame and attitude of the tag
-    > position of the Camera in Tag axis: -R_ct.T*tvec
-    > Transformation of the camera, respect to f1 (the tag flipped frame): R_cf1 = R_ct*R_tf1 = R_cf*R_f
-    > Transformation of the tag, respect to f2 (the camera flipped frame): R_tf2 = Rtc*R_cf2 = R_tc*R_f
-    > R_tf1 = R_cf2 an symmetric = R_f
+
 """
 
 import numpy as np
@@ -63,11 +54,13 @@ def rotationMatrixToEulerAngles(R):
         z = 0
 
     return np.array([x, y, z])
+#-------
 
-marker_size=11.3 #cm
+marker_size=15 #cm
 xo=0
 yo=0
 zo=0#translaçao quando colocar mapa
+
 #UDP socket
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -109,17 +102,13 @@ aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_ARUCO_ORIGINAL)
 
 parameters = aruco.DetectorParameters_create()
 
-#--- import image and create opencv image
-
-#img_file = "image.png"
-#img = cv2.imread(img_file)
 
 #---capture the videocamera
 cap = cv2.VideoCapture(0)
 
-#---set the camera size as the one it was calibrated with
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+#---set the camera size as the one it was calibrated with 
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280) #640
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720) #480 default
 
 while True:
 
@@ -136,7 +125,7 @@ while True:
     corners, ids, rejected = aruco.detectMarkers(image=gray, dictionary=aruco_dict, parameters=parameters)
     #print(ids)
     
-    if ids is not None:         
+    if ids is not None: #se alguem marker é encontrado        
         
         #--- draw the markers and reference frame over image
         aruco.drawDetectedMarkers(frame, corners)
@@ -165,6 +154,7 @@ while True:
             #print(Hc0)
             #print(pc)
             
+            #p0: posiçao no referencial do mapa
             p0=np.matmul(Hc0,pc)
             #print(p0)
             
@@ -178,7 +168,7 @@ while True:
             #get the rotation in terms of euler 321 (needs to be flipped first: 180 degrees rotation)
             roll_marker, pitch_marker, yaw_marker = rotationMatrixToEulerAngles(R_flip*R_tc)
             
-            #print marker's attitude respect to the camera frame
+            #angulo tetha é a rotaçao da tag em torno do eixo z- yaw
             str_ang = "t%.2f;"%(math.degrees(yaw_marker))
             #print(str_ang)
             
