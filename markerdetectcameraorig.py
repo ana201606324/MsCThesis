@@ -1,9 +1,10 @@
 """
-
+This demo calculates multiple things for different scenarios.
+Here are the defined reference frames:
 TAG:
                 A y
                 |
-                |
+                |q
                 |tag center
                 O---------> x
 CAMERA:
@@ -12,7 +13,15 @@ CAMERA:
                 |
                 |
                 V y
-
+F1: Flipped (180 deg) tag frame around x axis
+F2: Flipped (180 deg) camera frame around x axis
+The attitude of a generic frame 2 respect to a frame 1 can obtained by calculating euler(R_21.T)
+We are going to obtain the following quantities:
+    > from aruco library we obtain tvec and Rct, position of the tag in camera frame and attitude of the tag
+    > position of the Camera in Tag axis: -R_ct.T*tvec
+    > Transformation of the camera, respect to f1 (the tag flipped frame): R_cf1 = R_ct*R_tf1 = R_cf*R_f
+    > Transformation of the tag, respect to f2 (the camera flipped frame): R_tf2 = Rtc*R_cf2 = R_tc*R_f
+    > R_tf1 = R_cf2 an symmetric = R_f
 """
 
 import numpy as np
@@ -20,6 +29,7 @@ import cv2
 import cv2.aruco as aruco
 import sys, time, math
 import socket
+import math
 
 
 #------------------------------------------------------------------------------
@@ -54,19 +64,19 @@ def rotationMatrixToEulerAngles(R):
         z = 0
 
     return np.array([x, y, z])
-#-------
 
 marker_size=15 #cm
 xo=0
 yo=0
-zo=0#translaçao quando colocar mapa
-
+zo=0
+#translacao quando colocar mapa
 #UDP socket
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-ip='192.168.1.95'
-port = 9800
+#ip='192.168.1.95'
+ip='192.168.1.88'
+port = 9500
 address = (ip, port)
 
 
@@ -81,8 +91,8 @@ R_flip[0,0] = 1.0
 R_flip[1,1] =-1.0
 R_flip[2,2] =-1.0
 
-#--- matriz de transformacao homogenea composta por uma matriz de rotaçao igual a R_flip
-#(pois o referencial 0 tem o eixo de y rodado 180 grau em relacao ao y da camara) e uma matriz de translaçao 
+#--- matriz de transformacao homogenea composta por uma matriz de rotacao igual a R_flip
+#(pois o referencial 0 tem o eixo de y rodado 180 grau em relacao ao y da camara) e uma matriz de translacao 
 Hc0 = np.zeros((4,4), dtype=np.float32)
 Hc0[0,0] = 1.0
 Hc0[1,1] =-1.0
@@ -102,13 +112,19 @@ aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_ARUCO_ORIGINAL)
 
 parameters = aruco.DetectorParameters_create()
 
+#parameters.cornerRefinementMethod = aruco.CORNER_REFINE_SUBPIX
+
+#--- import image and create opencv image
+
+#img_file = "image.png"
+#img = cv2.imread(img_file)
 
 #---capture the videocamera
 cap = cv2.VideoCapture(0)
 
-#---set the camera size as the one it was calibrated with 
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280) #640
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720) #480 default
+#---set the camera size as the one it was calibrated with
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 634 ) #640 #634 #1280
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 468) #480 #468 #720
 
 while True:
 
@@ -125,7 +141,7 @@ while True:
     corners, ids, rejected = aruco.detectMarkers(image=gray, dictionary=aruco_dict, parameters=parameters)
     #print(ids)
     
-    if ids is not None: #se alguem marker é encontrado        
+    if ids is not None:         
         
         #--- draw the markers and reference frame over image
         aruco.drawDetectedMarkers(frame, corners)
@@ -154,11 +170,10 @@ while True:
             #print(Hc0)
             #print(pc)
             
-            #p0: posiçao no referencial do mapa
             p0=np.matmul(Hc0,pc)
             #print(p0)
             
-            str_pos = "i%dx%.2fy%.2fz%.2f" % (ids[i], p0[0], p0[1], p0[2])
+            str_pos = "i%dx%dy%dz%d" % (ids[i], p0[0], p0[1], p0[2])
             
             
             #obtain rotation matrix tag->camera
@@ -168,17 +183,17 @@ while True:
             #get the rotation in terms of euler 321 (needs to be flipped first: 180 degrees rotation)
             roll_marker, pitch_marker, yaw_marker = rotationMatrixToEulerAngles(R_flip*R_tc)
             
-            #angulo tetha é a rotaçao da tag em torno do eixo z- yaw
-            str_ang = "t%.2f;"%(math.degrees(yaw_marker))
+            #print marker's attitude respect to the camera frame
+            str_ang = "t%d;"%(round(math.degrees(yaw_marker)))
             #print(str_ang)
             
             message=message+(str_pos + str_ang) 
-            print(message)
+            #print(message)
             
         #cv2.putText(frame, str_attitude, (0,150), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 2, cv2.LINE_AA)
         
         #send UDP packet
-        #print(message)
+        print(message)
         messageb = str.encode(message)
         sock.sendto(messageb,(ip, port))
     
@@ -192,4 +207,5 @@ while True:
         cv2.destroyAllWindows()
         sock.close()            
         break
+
 
