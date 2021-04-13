@@ -19,7 +19,7 @@ import argparse
 #---------------------- SET THE PARAMETERS
 nRows = 9
 nCols = 6
-dimension = 36 #- mm
+dimension = 58 #45#36 #- mm
 
 workingFolder   = "./camera_01"
 imageType       = 'jpg'
@@ -137,9 +137,9 @@ if (nPatternFound > 1):
     print("Disortion: ", dist)
 
     #--------- Save result
-    filename = workingFolder + "/cameraMatrix.txt"
+    filename = workingFolder + "/camera_matrix.txt"
     np.savetxt(filename, mtx, delimiter=',')
-    filename = workingFolder + "/cameraDistortion.txt"
+    filename = workingFolder + "/camera_ dist.txt"
     np.savetxt(filename, dist, delimiter=',')
 
     mean_error = 0
