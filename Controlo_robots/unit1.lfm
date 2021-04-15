@@ -1,0 +1,161 @@
+object Form1: TForm1
+  Left = 875
+  Height = 214
+  Top = 165
+  Width = 974
+  Caption = 'Form1'
+  ClientHeight = 214
+  ClientWidth = 974
+  LCLVersion = '2.0.4.0'
+  object Button1: TButton
+    Left = 184
+    Height = 25
+    Top = 48
+    Width = 75
+    Caption = 'IP'
+    TabOrder = 0
+  end
+  object Edit1: TEdit
+    Left = 16
+    Height = 23
+    Top = 24
+    Width = 136
+    TabOrder = 1
+    Text = 'Edit1'
+  end
+  object Edit2: TEdit
+    Left = 16
+    Height = 23
+    Top = 64
+    Width = 136
+    TabOrder = 2
+    Text = 'Edit2'
+  end
+  object Label1: TLabel
+    Left = 296
+    Height = 15
+    Top = 35
+    Width = 34
+    Caption = 'Label1'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 368
+    Height = 15
+    Top = 35
+    Width = 34
+    Caption = 'Label2'
+    ParentColor = False
+  end
+  object Label3: TLabel
+    Left = 368
+    Height = 15
+    Top = 72
+    Width = 34
+    Caption = 'Label3'
+    ParentColor = False
+  end
+  object Label4: TLabel
+    Left = 368
+    Height = 15
+    Top = 112
+    Width = 34
+    Caption = 'Label4'
+    ParentColor = False
+  end
+  object Label5: TLabel
+    Left = 368
+    Height = 15
+    Top = 152
+    Width = 34
+    Caption = 'Label5'
+    ParentColor = False
+  end
+  object Label6: TLabel
+    Left = 544
+    Height = 15
+    Top = 35
+    Width = 34
+    Caption = 'Label6'
+    ParentColor = False
+  end
+  object Label7: TLabel
+    Left = 616
+    Height = 15
+    Top = 35
+    Width = 34
+    Caption = 'Label7'
+    ParentColor = False
+  end
+  object Label8: TLabel
+    Left = 616
+    Height = 15
+    Top = 72
+    Width = 34
+    Caption = 'Label8'
+    ParentColor = False
+  end
+  object Label9: TLabel
+    Left = 616
+    Height = 15
+    Top = 112
+    Width = 34
+    Caption = 'Label9'
+    ParentColor = False
+  end
+  object Label10: TLabel
+    Left = 616
+    Height = 15
+    Top = 152
+    Width = 40
+    Caption = 'Label10'
+    ParentColor = False
+  end
+  object Label11: TLabel
+    Left = 792
+    Height = 15
+    Top = 35
+    Width = 40
+    Caption = 'Label11'
+    ParentColor = False
+  end
+  object Label12: TLabel
+    Left = 864
+    Height = 15
+    Top = 35
+    Width = 40
+    Caption = 'Label12'
+    ParentColor = False
+  end
+  object Label13: TLabel
+    Left = 864
+    Height = 15
+    Top = 72
+    Width = 40
+    Caption = 'Label13'
+    ParentColor = False
+  end
+  object Label14: TLabel
+    Left = 864
+    Height = 15
+    Top = 112
+    Width = 40
+    Caption = 'Label14'
+    ParentColor = False
+  end
+  object Label15: TLabel
+    Left = 864
+    Height = 15
+    Top = 152
+    Width = 40
+    Caption = 'Label15'
+    ParentColor = False
+  end
+  object UDPComp: TLUDPComponent
+    Host = '127.0.0.1'
+    Port = 5001
+    Timeout = 0
+    left = 72
+    top = 128
+  end
+end
