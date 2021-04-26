@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<track>
+  <defines>
+    <conts name="field_length" value="3"/>
+    <conts name="field_width" value="2"/>
+    <conts name="ground" value="0.001"/>
+  </defines>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.00473972602739726" y="0.0273886639676113" z="ground" angle="0"/>
+    <size width="0.01" length="0.182479452054795"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.187219178082192" y="0.0273886639676113" z="ground" angle="0"/>
+    <size width="0.01" length="0.200253424657534"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.187219178082192" y="0.0273886639676113" z="ground" angle="90"/>
+    <size width="0.01" length="0.293805668016194"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.58772602739726" y="0.0273886639676113" z="ground" angle="180"/>
+    <size width="0.01" length="0.200253424657534"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.58772602739726" y="0.0273886639676113" z="ground" angle="0"/>
+    <size width="0.01" length="0.286753424657534"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.58772602739726" y="0.0273886639676113" z="ground" angle="90"/>
+    <size width="0.01" length="0.276376518218623"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.874479452054794" y="0.0273886639676113" z="ground" angle="0"/>
+    <size width="0.01" length="0.184849315068493"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.874479452054794" y="0.0273886639676113" z="ground" angle="90"/>
+    <size width="0.01" length="0.268906882591093"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.42902739726027" y="0.0273886639676113" z="ground" angle="180"/>
+    <size width="0.01" length="0.184849315068493"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.42902739726027" y="0.0273886639676113" z="ground" angle="0"/>
+    <size width="0.01" length="0.260684931506849"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.42902739726027" y="0.0273886639676113" z="ground" angle="90"/>
+    <size width="0.01" length="0.263927125506073"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.68971232876712" y="0.0273886639676113" z="ground" angle="90"/>
+    <size width="0.01" length="0.167236842105263"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.68971232876712" y="1.03080971659919" z="ground" angle="-90"/>
+    <size width="0.01" length="0.167236842105263"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.68971232876712" y="1.03080971659919" z="ground" angle="180"/>
+    <size width="0.01" length="0.255945205479452"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.43376712328767" y="1.03080971659919" z="ground" angle="-90"/>
+    <size width="0.01" length="0.268906882591093"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.43376712328767" y="1.03080971659919" z="ground" angle="180"/>
+    <size width="0.01" length="0.186429223744292"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.43376712328767" y="0.761902834008097" z="ground" angle="-90"/>
+    <size width="0.01" length="0.226578947368421"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.43376712328767" y="0.761902834008097" z="ground" angle="180"/>
+    <size width="0.01" length="0.175369863013699"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.43376712328767" y="0.535323886639676" z="ground" angle="-91.1127997530969"/>
+    <size width="0.01" length="0.24405412613882"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.43376712328767" y="0.535323886639676" z="ground" angle="180"/>
+    <size width="0.01" length="0.188799086757991"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.42902739726027" y="0.291315789473684" z="ground" angle="180"/>
+    <size width="0.01" length="0.163520547945206"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.0356301369863" y="0.296295546558704" z="ground" angle="180"/>
+    <size width="0.01" length="0.161150684931507"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.874479452054794" y="0.296295546558704" z="ground" angle="91.7036866171277"/>
+    <size width="0.01" length="0.239134049474762"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.867369863013699" y="0.535323886639676" z="ground" angle="0"/>
+    <size width="0.01" length="0.188799086757991"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.867369863013699" y="0.535323886639676" z="ground" angle="90"/>
+    <size width="0.01" length="0.231558704453441"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.867369863013699" y="0.766882591093117" z="ground" angle="0"/>
+    <size width="0.01" length="0.168260273972603"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.867369863013699" y="0.766882591093117" z="ground" angle="88.4569567883536"/>
+    <size width="0.01" length="0.264022866120023"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.874479452054794" y="1.03080971659919" z="ground" angle="0"/>
+    <size width="0.01" length="0.186429223744292"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.874479452054794" y="1.03080971659919" z="ground" angle="180"/>
+    <size width="0.01" length="0.279643835616438"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.594835616438356" y="1.03080971659919" z="ground" angle="90"/>
+    <size width="0.01" length="0.174291497975708"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.594835616438356" y="1.03080971659919" z="ground" angle="-90"/>
+    <size width="0.01" length="0.256457489878543"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.594835616438356" y="1.03080971659919" z="ground" angle="180"/>
+    <size width="0.01" length="0.203808219178082"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.594835616438356" y="0.774352226720648" z="ground" angle="-90.865553913396"/>
+    <size width="0.01" length="0.15688024900115"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.594835616438356" y="0.774352226720648" z="ground" angle="-173.341540316834"/>
+    <size width="0.01" length="0.171788856850428"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.41472602739726" y="0.303765182186235" z="ground" angle="0"/>
+    <size width="0.01" length="0.173"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.58772602739726" y="0.303765182186235" z="ground" angle="89.1344460866037"/>
+    <size width="0.01" length="0.15688024900115"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.187219178082192" y="0.321194331983806" z="ground" angle="90"/>
+    <size width="0.01" length="0.151882591093117"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.187219178082192" y="0.321194331983806" z="ground" angle="180"/>
+    <size width="0.01" length="0.180109589041096"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.0142191780821918" y="0.62495951417004" z="ground" angle="0"/>
+    <size width="0.01" length="0.173"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.187219178082192" y="0.62495951417004" z="ground" angle="0"/>
+    <size width="0.01" length="0"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.187219178082192" y="0.62495951417004" z="ground" angle="-90"/>
+    <size width="0.01" length="0.151882591093117"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.187219178082192" y="0.62495951417004" z="ground" angle="90"/>
+    <size width="0.01" length="0.202925101214575"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.187219178082192" y="1.03080971659919" z="ground" angle="0"/>
+    <size width="0.01" length="0.203808219178082"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.187219178082192" y="1.03080971659919" z="ground" angle="-90"/>
+    <size width="0.01" length="0.202925101214575"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.05932876712329" y="0.0273886639676113" z="ground" angle="0"/>
+    <size width="0.01" length="0.184849315068493"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.68971232876712" y="0.194625506072874" z="ground" angle="90"/>
+    <size width="0.01" length="0.167236842105263"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.68971232876712" y="0.361862348178138" z="ground" angle="90"/>
+    <size width="0.01" length="0.167236842105263"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.68971232876712" y="0.529099190283401" z="ground" angle="90"/>
+    <size width="0.01" length="0.167236842105263"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.68971232876712" y="0.696336032388664" z="ground" angle="90"/>
+    <size width="0.01" length="0.167236842105263"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.24733789954338" y="1.03080971659919" z="ground" angle="180"/>
+    <size width="0.01" length="0.186429223744292"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="1.24496803652968" y="0.535323886639676" z="ground" angle="180"/>
+    <size width="0.01" length="0.188799086757991"/>
+  </line>
+  <line>
+    <color rgb24="8F8F8F"/>
+    <position x="0.592465753424658" y="0.61748987854251" z="ground" angle="-90.8655539133963"/>
+    <size width="0.01" length="0.15688024900115"/>
+  </line>
+</track>
