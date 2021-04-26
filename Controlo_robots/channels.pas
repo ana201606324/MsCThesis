@@ -9,7 +9,7 @@ uses
 
 type
 
- TProcessFrame = procedure(channel: char; value: integer; source: integer; robot: integer) of object;
+ TProcessFrame = procedure(channel: char; value: integer; source: integer) of object;
 
 { TChannels }
 
@@ -24,7 +24,7 @@ public
   frameData: string;
 
   ProcessFrame: TProcessFrame;
-  procedure ReceiveData(s: string; robot: integer);
+  procedure ReceiveData(s: string);
 
 
   constructor Create(newProcessFrame: TProcessFrame; NewFrameDigits: integer = 8);
@@ -56,7 +56,7 @@ begin
 end;
 
 
-procedure TChannels.ReceiveData(s: string; robot: integer);
+procedure TChannels.ReceiveData(s: string);
 var //b: byte;
     c: char;
     value: integer;
@@ -84,7 +84,7 @@ begin
         inc(frame);
         if frame = FrameDigits then begin
           value := StrToIntDef('$' + frameData, -1);
-          processFrame(channel, value, frameSource, robot);
+          processFrame(channel, value, frameSource);
           frame := -1;
         end;
       end else begin
@@ -95,4 +95,3 @@ begin
 end;
 
 end.
-
