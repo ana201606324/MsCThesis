@@ -1,0 +1,326 @@
+object Form2: TForm2
+  Left = 254
+  Height = 676
+  Top = 78
+  Width = 1515
+  Caption = 'Link definition'
+  ClientHeight = 676
+  ClientWidth = 1515
+  OnCreate = FormCreate
+  OnPaint = FormPaint
+  OnShow = FormShow
+  LCLVersion = '2.0.4.0'
+  object Button1: TButton
+    Left = 6
+    Height = 45
+    Top = 621
+    Width = 373
+    Caption = 'Submit'
+    OnClick = Button1Click
+    ParentFont = False
+    TabOrder = 0
+  end
+  object Button2: TButton
+    Left = 1293
+    Height = 45
+    Top = 621
+    Width = 198
+    Caption = 'Go back'
+    OnClick = Button2Click
+    ParentFont = False
+    TabOrder = 1
+  end
+  object StringGrid1: TStringGrid
+    Left = 198
+    Height = 192
+    Top = 410
+    Width = 531
+    AutoFillColumns = True
+    ColCount = 4
+    Columns = <    
+      item
+        MinSize = 8
+        MaxSize = 160
+        Title.Caption = 'Link_ID'
+        Width = 131
+      end    
+      item
+        MinSize = 8
+        MaxSize = 160
+        Title.Caption = 'Node_1_ID'
+        Width = 131
+      end    
+      item
+        MinSize = 8
+        MaxSize = 160
+        Title.Caption = 'Node_2_ID'
+        Width = 131
+      end    
+      item
+        MinSize = 8
+        MaxSize = 160
+        Title.Caption = 'Distance (meters)'
+        Width = 134
+      end>
+    DoubleBuffered = True
+    FixedCols = 0
+    ParentBiDiMode = False
+    ParentDoubleBuffered = False
+    ParentFont = False
+    RowCount = 1
+    TabOrder = 2
+    ColWidths = (
+      131
+      131
+      131
+      134
+    )
+  end
+  object StringGrid2: TStringGrid
+    Left = 198
+    Height = 269
+    Top = 32
+    Width = 531
+    AutoFillColumns = True
+    ColCount = 4
+    Columns = <    
+      item
+        MinSize = 8
+        MaxSize = 160
+        Title.Caption = 'Node_id'
+        Width = 131
+      end    
+      item
+        MinSize = 8
+        MaxSize = 160
+        Title.Caption = 'X_coord'
+        Width = 131
+      end    
+      item
+        MinSize = 8
+        MaxSize = 160
+        Title.Caption = 'Y_Coord'
+        Width = 131
+      end    
+      item
+        MinSize = 8
+        MaxSize = 160
+        Title.Caption = 'Number of links'
+        Width = 134
+      end>
+    FixedCols = 0
+    ParentFont = False
+    RowCount = 1
+    TabOrder = 3
+    ColWidths = (
+      131
+      131
+      131
+      134
+    )
+  end
+  object LabeledEdit1: TLabeledEdit
+    Left = 19
+    Height = 23
+    Top = 45
+    Width = 115
+    EditLabel.Height = 15
+    EditLabel.Width = 115
+    EditLabel.Caption = 'Node1_ID'
+    EditLabel.ParentColor = False
+    EditLabel.ParentFont = False
+    ParentFont = False
+    TabOrder = 4
+  end
+  object Button3: TButton
+    Left = 198
+    Height = 27
+    Top = 314
+    Width = 147
+    Caption = 'Get Node Table'
+    OnClick = Button3Click
+    ParentFont = False
+    TabOrder = 5
+  end
+  object Label1: TLabel
+    Left = 198
+    Height = 15
+    Top = 6
+    Width = 59
+    Caption = 'Node Table'
+    ParentColor = False
+    ParentFont = False
+  end
+  object Label2: TLabel
+    Left = 205
+    Height = 15
+    Top = 387
+    Width = 52
+    Caption = 'Link Table'
+    ParentColor = False
+    ParentFont = False
+  end
+  object Button4: TButton
+    Left = 19
+    Height = 42
+    Top = 154
+    Width = 139
+    Caption = 'Add Link'
+    OnClick = Button4Click
+    ParentFont = False
+    TabOrder = 6
+  end
+  object LabeledEdit2: TLabeledEdit
+    Left = 19
+    Height = 23
+    Top = 103
+    Width = 115
+    EditLabel.Height = 15
+    EditLabel.Width = 115
+    EditLabel.Caption = 'Node2_ID'
+    EditLabel.ParentColor = False
+    EditLabel.ParentFont = False
+    ParentFont = False
+    TabOrder = 7
+    OnChange = LabeledEdit2Change
+  end
+  object RadioGroup1: TRadioGroup
+    Left = 17
+    Height = 95
+    Top = 224
+    Width = 142
+    AutoFill = True
+    Caption = 'Ajust Node Coordinates '
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 75
+    ClientWidth = 138
+    ParentFont = False
+    TabOrder = 8
+    object RadioButton1: TRadioButton
+      Left = 6
+      Height = 38
+      Top = 0
+      Width = 126
+      Caption = 'Yes'
+      ParentFont = False
+      TabOrder = 0
+    end
+    object RadioButton2: TRadioButton
+      Left = 6
+      Height = 37
+      Top = 38
+      Width = 126
+      Caption = 'No'
+      ParentFont = False
+      TabOrder = 1
+    end
+  end
+  object Label3: TLabel
+    Left = 442
+    Height = 1
+    Top = 634
+    Width = 1
+    Font.Color = clRed
+    Font.Height = -20
+    ParentColor = False
+    ParentFont = False
+  end
+  object RadioGroup2: TRadioGroup
+    Left = 17
+    Height = 103
+    Top = 403
+    Width = 142
+    AutoFill = True
+    Caption = 'Analise critical zones '
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 83
+    ClientWidth = 138
+    ParentFont = False
+    TabOrder = 9
+    object RadioButton3: TRadioButton
+      Left = 6
+      Height = 42
+      Top = 0
+      Width = 126
+      Caption = 'Yes'
+      ParentFont = False
+      TabOrder = 0
+    end
+    object RadioButton4: TRadioButton
+      Left = 6
+      Height = 41
+      Top = 42
+      Width = 126
+      Caption = 'No'
+      ParentFont = False
+      TabOrder = 1
+    end
+  end
+  object PaintBox1: TPaintBox
+    Left = 762
+    Height = 563
+    Top = 38
+    Width = 738
+    ParentFont = False
+    OnPaint = PaintBox1Paint
+  end
+  object GroupBox1: TGroupBox
+    Left = 429
+    Height = 92
+    Top = 308
+    Width = 282
+    Caption = 'Delete Link'
+    ClientHeight = 72
+    ClientWidth = 278
+    ParentFont = False
+    TabOrder = 10
+    object Button6: TButton
+      Left = 166
+      Height = 25
+      Top = 37
+      Width = 101
+      Caption = 'Delete Link'
+      OnClick = Button6Click
+      ParentFont = False
+      TabOrder = 0
+    end
+    object LabeledEdit4: TLabeledEdit
+      Left = 13
+      Height = 23
+      Top = 32
+      Width = 106
+      EditLabel.Height = 15
+      EditLabel.Width = 106
+      EditLabel.Caption = 'Link ID'
+      EditLabel.ParentColor = False
+      EditLabel.ParentFont = False
+      ParentFont = False
+      TabOrder = 1
+    end
+  end
+  object LabeledEdit5: TLabeledEdit
+    Left = 17
+    Height = 23
+    Top = 352
+    Width = 80
+    EditLabel.Height = 15
+    EditLabel.Width = 80
+    EditLabel.Caption = 'Slack for Node Ajustement'
+    EditLabel.ParentColor = False
+    EditLabel.ParentFont = False
+    ParentFont = False
+    TabOrder = 11
+  end
+end
