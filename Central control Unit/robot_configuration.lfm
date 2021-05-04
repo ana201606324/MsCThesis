@@ -494,6 +494,118 @@ object FRobot_Configuration: TFRobot_Configuration
     Caption = 'Tag id:'
     ParentColor = False
   end
+  object Label3: TLabel
+    Left = 264
+    Height = 15
+    Top = 544
+    Width = 34
+    Caption = 'Label3'
+    ParentColor = False
+  end
+  object Label30: TLabel
+    Left = 526
+    Height = 15
+    Top = 298
+    Width = 40
+    Caption = 'Label30'
+    ParentColor = False
+  end
+  object Label31: TLabel
+    Left = 528
+    Height = 15
+    Top = 336
+    Width = 40
+    Caption = 'Label31'
+    ParentColor = False
+  end
+  object Label32: TLabel
+    Left = 632
+    Height = 15
+    Top = 298
+    Width = 40
+    Caption = 'Label32'
+    ParentColor = False
+  end
+  object Label33: TLabel
+    Left = 632
+    Height = 15
+    Top = 336
+    Width = 40
+    Caption = 'Label33'
+    ParentColor = False
+  end
+  object Label34: TLabel
+    Left = 760
+    Height = 15
+    Top = 296
+    Width = 40
+    Caption = 'Label34'
+    ParentColor = False
+  end
+  object Label35: TLabel
+    Left = 760
+    Height = 15
+    Top = 336
+    Width = 40
+    Caption = 'Label35'
+    ParentColor = False
+  end
+  object Label36: TLabel
+    Left = 520
+    Height = 15
+    Top = 400
+    Width = 40
+    Caption = 'Label36'
+    ParentColor = False
+  end
+  object Label37: TLabel
+    Left = 624
+    Height = 15
+    Top = 400
+    Width = 40
+    Caption = 'Label37'
+    ParentColor = False
+  end
+  object Label38: TLabel
+    Left = 768
+    Height = 15
+    Top = 400
+    Width = 40
+    Caption = 'Label38'
+    ParentColor = False
+  end
+  object Label39: TLabel
+    Left = 455
+    Height = 15
+    Top = 506
+    Width = 40
+    Caption = 'Label39'
+    ParentColor = False
+  end
+  object Label40: TLabel
+    Left = 568
+    Height = 15
+    Top = 504
+    Width = 40
+    Caption = 'Label40'
+    ParentColor = False
+  end
+  object Label41: TLabel
+    Left = 568
+    Height = 15
+    Top = 536
+    Width = 40
+    Caption = 'Label41'
+    ParentColor = False
+  end
+  object Label42: TLabel
+    Left = 568
+    Height = 15
+    Top = 568
+    Width = 40
+    Caption = 'Label42'
+    ParentColor = False
+  end
   object UDP: TLUDPComponent
     Port = 0
     OnReceive = UDPReceive
@@ -505,7 +617,7 @@ object FRobot_Configuration: TFRobot_Configuration
     Port = 0
     OnReceive = UDPRobotReceive
     Timeout = 0
-    left = 680
-    top = 336
+    left = 840
+    top = 416
   end
 end

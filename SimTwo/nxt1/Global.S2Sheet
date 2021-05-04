@@ -24,7 +24,7 @@
     <cell r="37" c="5" text="-0.19475918632297917" />
     <cell r="32" c="5" text="3" />
     <cell r="9" c="4" text="3.14" />
-    <cell r="18" c="2" text="liv" />
+    <cell r="18" c="2" text="READY" />
     <cell r="6" c="3" text="N1
 P1
 S14
@@ -85,8 +85,7 @@ X0.483
 Y0.052
 D4
 T1
-F
-" />
+F" />
     <cell r="18" c="3" text="11" />
     <cell r="18" c="4" text="11" />
     <cell r="18" c="5" text="2.987" />
@@ -195,8 +194,7 @@ X0.125
 Y0.055
 D4
 T1
-F
-" />
+F" />
     <cell r="8" c="3" text="N3
 P3
 S30
@@ -257,8 +255,7 @@ X2.277
 Y0.486
 D2
 T1
-F
-" />
+F" />
     <cell r="9" c="3" text="N4
 P4
 S11
@@ -307,8 +304,7 @@ X2.987
 Y1.225
 D2
 T1
-F
-" />
+F" />
     <cell r="9" c="5" text="0.457" />
     <cell r="1" c="5" text="1" />
     <cell r="2" c="5" text="0" />

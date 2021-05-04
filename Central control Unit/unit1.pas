@@ -50,9 +50,9 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
-    Button1: TButton;
+    Button1_R1: TButton;
     Button2: TButton;
-    Button3_R1: TButton;
+    Button3: TButton;
     Button4_R2: TButton;
     Button5_R3: TButton;
     GLCadencer1: TGLCadencer;
@@ -64,9 +64,9 @@ type
     GLSceneViewer1: TGLSceneViewer;
     StringGrid1: TStringGrid;
     StringGrid2: TStringGrid;
-    procedure Button1Click(Sender: TObject);
+    procedure Button1_R1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
-    procedure Button3_R1Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure GLCadencer1Progress(Sender: TObject; const deltaTime,
       newTime: Double);
@@ -259,6 +259,7 @@ begin
   begin
        for aux4:=0 to l4-1 do
        begin
+           if robotlist[aux4].id_robot <> -1 then begin
             rid_curr:=robotlist[aux4].id_robot;  //encontrar o r_id na lista de robots
             if rid_curr=r_id then
             begin
@@ -277,6 +278,7 @@ begin
                       end;
                  end;
             end;
+       end;
        end;
   end;
 end;
@@ -342,24 +344,27 @@ angle:double;
     begin
     for aux1:=0 to l1-1 do
       begin
-         x:=(robotlist[aux1].pos_X-xmax)*scale;
-         y:=(robotlist[aux1].pos_Y-ymax)*scale;
-         newcube:=TGLCube.CreateAsChild(GLScene.Objects);
-         newcube.CubeHeight:=r_h;
-         newcube.CubeWidth:=r_w;
-         newcube.CubeDepth:=1;
-         newcube.Position.X:=x;
-         newcube.Position.y:=y;
-         newcube.Position.z:=1;
-         angle:=radtodeg(robotlist[aux1].angle);
-         newcube.RollAngle:=angle;
-         form1.robots[aux1].cube:=newcube;
+        if robotlist[aux1].id_robot <> -1 then begin  //uma vez que o vetor robts é de dimensao fixa, verificamos se algum robot ja foi atribuido
+           x:=(robotlist[aux1].pos_X-xmax)*scale;
+           y:=(robotlist[aux1].pos_Y-ymax)*scale;
+           newcube:=TGLCube.CreateAsChild(GLScene.Objects);
+           newcube.CubeHeight:=r_h;
+           newcube.CubeWidth:=r_w;
+           newcube.CubeDepth:=1;
+           newcube.Position.X:=x;
+           newcube.Position.y:=y;
+           newcube.Position.z:=1;
+           angle:=radtodeg(robotlist[aux1].angle);
+           newcube.RollAngle:=angle;
+           form1.robots[aux1].cube:=newcube;
 
-         //colour.
-         newcube.Material.FrontProperties.Ambient.RandomColor;
-      end;
+           //colour.
+           newcube.Material.FrontProperties.Ambient.RandomColor;
+         end;
+        end;
       end;
  end;
+
 
 function get_index_node(nodelist:a_node; id:integer):integer;
 var
@@ -452,6 +457,7 @@ var
   c:integer;
   aux4:integer;
   aux5:integer;
+  ola:integer;
 begin
   c:=check_if_link_exists(n1,n2,nodelist);
   if c=0 then
@@ -468,6 +474,9 @@ begin
       nodelist[aux4].links[l2].id_l:=id+1;
       nodelist[aux4].links[l2].distance:=dist;
       nodelist[aux4].links[l2].node_to_link:=n2;
+      if nodelist[aux4].links[l2].node_to_link =0 then begin
+         ola:=1;
+      end;
      end
      else if n_curr=n2 then
      begin
@@ -476,6 +485,9 @@ begin
       nodelist[aux4].links[l2].id_l:=id+1;
       nodelist[aux4].links[l2].distance:=dist;
       nodelist[aux4].links[l2].node_to_link:=n1;
+      if nodelist[aux4].links[l2].node_to_link =0 then begin
+         ola:=1;
+      end;
      end;
   end;
   end;
@@ -510,12 +522,12 @@ var
   dist_value:string;
   l1:integer;
   n1_i:integer;
-  n2_i:integer;
+  n2_i, aux_link:integer;
   dist_d:Double;
 
 begin
 
-  ReadXMLFile(Doc, 'C:\Users\Ana\Desktop\faculdade\5 ano\Tese\18(Comentado)\Central control Unit\test.xml');
+  ReadXMLFile(Doc, 'C:\Users\Ana\Desktop\faculdade\5 ano\Tese\Tese\Central control Unit\test.xml');
   Nodes:= Doc.GetElementsByTagName('Node');
   for i:= 0 to Nodes.Count - 1 do
   begin
@@ -532,6 +544,7 @@ begin
      nl_value:=nl.FirstChild.NodeValue;
      l1:=length(nodelist);
      setlength(nodelist,l1+1);
+
      nodelist[l1].id:=strtoint(id_value);
      nodelist[l1].pos_X:=strtofloat(x_value);
      nodelist[l1].pos_y:=strtofloat(y_value);
@@ -539,7 +552,8 @@ begin
      nodelist[l1].number_of_links:=strtoint(nl_value);
   end;
    Links:= Doc.GetElementsByTagName('Link');
-   for i:= 0 to Links.Count - 1 do
+   aux_link:=Links.Count - 1;
+   for i:= 0 to aux_link do
    begin
       Link:=Links[i];
       idl:=Link.Attributes.Item[0];
@@ -572,7 +586,7 @@ var
   SubMissions_a:array[0..4] of integer;
 begin
 
-  ReadXMLFile(Doc, 'C:\Users\Ana\Desktop\faculdade\5 ano\Tese\18(Comentado)\Central control Unit\mission.xml');
+  ReadXMLFile(Doc, 'C:\Users\Ana\Desktop\faculdade\5 ano\Tese\Tese\Central control Unit\mission.xml');
   Robots:= Doc.GetElementsByTagName('Robot');
   setlength(form1.robots,Robots.Count);
   for i:= 0 to Robots.Count - 1 do
@@ -1052,7 +1066,7 @@ begin
 
         end;
       end;
-      ReadXMLFile(Doc, 'C:\Users\Ana\Desktop\faculdade\5 ano\Tese\18(Comentado)\Central control Unit\test.xml');
+      ReadXMLFile(Doc, 'C:\Users\Ana\Desktop\faculdade\5 ano\Tese\Tese\Central control Unit\test.xml');
       Nodes:= Doc.GetElementsByTagName('Node');
       Node:= Nodes[0];
       id:=Node.Attributes.Item[0];
@@ -1077,7 +1091,7 @@ begin
         end;
 end;
 
-procedure TForm1.Button1Click(Sender: TObject);     //adiciona robots no mapa
+procedure TForm1.Button1_R1Click(Sender: TObject);     //adiciona robots no mapa
 var xmax:double;
     ymax:double;
     angle_r:double;
@@ -1085,7 +1099,7 @@ var xmax:double;
     ang_r:double;
 begin
 
-    if (sender as TButton).Name = 'Button3_R1' then begin
+    if (sender as TButton).Name = 'Button1_R1' then begin
        i:=0;
     end else if (sender as TButton).Name = 'Button4_R2' then begin
        i:=1;
@@ -1099,8 +1113,16 @@ begin
 
   //Create_robots(robots,full_nodelist,x_r,y_r,10);
     l4:=length(robots);
-    setlength(robots,l4+1); //incrementa a lista de robots    MUDAR PARA TAMANHO ESTATICO
+    if l4=0 then begin          //por segurança, dimensiona-se logo no inicio o vetor robots com dimensao 3 e colocamos o id=-1
+                                //para sabermos que nada foi atribuido
+      setlength(robots,3);
+      robots[0].id_robot:=-1;
+      robots[1].id_robot:=-1;
+      robots[2].id_robot:=-1;
+    end;
+   // setlength(robots,l4+1); //incrementa a lista de robots    MUDAR PARA TAMANHO ESTATICO
     //max_id:=get_max_robotid(robots);  //vai buscar o maximo id dos robots que ja foram introduzidos
+    l4:=i;
     robots[l4].id_robot:=i+1; //id do robot 1- robot n1 2-robot n2 3-robot n3
     id_r:=get_closest_node_id(full_nodelist, x_r, y_r, 200); //encontra o nó mais perto da posicao em que o robot se encontra
     l1:=length(robots[l4].current_nodes);
@@ -1147,7 +1169,7 @@ begin
    form3.show;
 end;
 
-procedure TForm1.Button3_R1Click(Sender: TObject);
+procedure TForm1.Button3Click(Sender: TObject);
 begin
    read_mission_xml();
    l1:=length(full_nodelist);

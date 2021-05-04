@@ -91,7 +91,7 @@ var
   Matrix_int: array of array of integer;
 implementation
       uses
-   unit1,main,controlo,unit3;
+   unit1,main,controlo,unit3, robot_configuration;
 
 {$R *.lfm}
 
@@ -300,27 +300,6 @@ procedure Print_map_in_GLS(ws:a_i;nodelist:a_node; width_line:integer; GLScene: 
        pos:array of array of double;
        begin
 
-      (*   SetLength(R_flip, 4, 4);
-         R_flip[0][0]:=1;
-         R_flip[0][1]:=0;
-         R_flip[0][2]:=0;
-         R_flip[0][3]:=0;
-         R_flip[1][1]:=-1;
-         R_flip[1][0]:=0;
-         R_flip[1][2]:=0;
-         R_flip[1][3]:=0;
-         R_flip[2][0]:=0;
-         R_flip[2][1]:=0;
-         R_flip[2][2]:=-1;
-         R_flip[2][3]:=0;
-         R_flip[3][0]:=0;
-         R_flip[3][1]:=0;
-         R_flip[3][2]:=0;
-         R_flip[3][3]:=1;
-
-         SetLength(pos, 4, 1);    *)
-
-
 
          l1:=length(nodelist);
          xmax:=find_biggest_X(nodelist)/2;
@@ -329,18 +308,8 @@ procedure Print_map_in_GLS(ws:a_i;nodelist:a_node; width_line:integer; GLScene: 
         begin
 
          x1:=nodelist[aux4].pos_X*scale;  //coordenada 1- no nº1
-         y1:=(nodelist[aux4].pos_y*scale); //aplicando uma matriz homogenea- rotaçao de 180graus
+         y1:=nodelist[aux4].pos_y*scale; //aplicando uma matriz homogenea- rotaçao de 180graus
 
-       (*  pos[0][0]:= x1;
-         pos[1][0]:= y1;
-         pos[2][0]:= 0;
-         pos[3][0]:=1;
-
-         omvmmv(
-          A[1,1], m, n, n,
-          b[1],
-          c[1]
-        );     *)
 
          l2:=length(nodelist[aux4].links);
          for aux5:=0 to l2-1 do
@@ -357,7 +326,7 @@ procedure Print_map_in_GLS(ws:a_i;nodelist:a_node; width_line:integer; GLScene: 
              if n_curr=ntl then
                 begin
                   x2:=nodelist[aux6].pos_X*scale;    //aplicar matriz homogenea
-                  y2:=(nodelist[aux6].pos_y*scale);    //coordenada 2- no nº2 que forma ligaçao com o no 1
+                  y2:=nodelist[aux6].pos_y*scale;    //coordenada 2- no nº2 que forma ligaçao com o no 1
 
                   end;
                   end;
@@ -422,20 +391,22 @@ ymax:double;
     begin
     for aux1:=0 to l1-1 do
       begin
-         x:=(robotlist[aux1].pos_X-xmax)*scale;
-         y:=(robotlist[aux1].pos_Y-ymax)*scale;
-         newcube:=TGLCube.CreateAsChild(GLScene.Objects);
-         newcube.CubeHeight:=r_h;
-         newcube.CubeWidth:=r_w;
-         newcube.CubeDepth:=1;
-         newcube.Position.X:=x;
-         newcube.Position.y:=y;
-         newcube.Position.z:=1;
-         angle:=radtodeg(robotlist[aux1].angle);
-         newcube.RollAngle:=angle;
-         form1.robots[aux1].cube:=newcube;
-         //colour.
-         newcube.Material.FrontProperties.Ambient.RandomColor;
+        if robotlist[aux1].id_robot <> -1 then begin  //uma vez que o vetor robts é de dimensao fixa, verificamos se algum robot ja foi atribuido
+           x:=(robotlist[aux1].pos_X-xmax)*scale;
+           y:=(robotlist[aux1].pos_Y-ymax)*scale;
+           newcube:=TGLCube.CreateAsChild(GLScene.Objects);
+           newcube.CubeHeight:=r_h;
+           newcube.CubeWidth:=r_w;
+           newcube.CubeDepth:=1;
+           newcube.Position.X:=x;
+           newcube.Position.y:=y;
+           newcube.Position.z:=1;
+           angle:=radtodeg(robotlist[aux1].angle);
+           newcube.RollAngle:=angle;
+           form1.robots[aux1].cube:=newcube;
+           //colour.
+           newcube.Material.FrontProperties.Ambient.RandomColor;
+        end;
       end;
       end;
  end;
@@ -625,9 +596,10 @@ begin
      l1:=length(form1.robots);
      for aux1:=0 to l1-1 do
      begin
-
+      if form1.robots[aux1].id_robot<>-1 then begin
      form1.robots[aux1].cube.Position.X:=(form1.robots[aux1].pos_X-xmax)*scale; //form1.robots[aux1].pos_X*200-1.5*200;
      form1.robots[aux1].cube.Position.Y:=(form1.robots[aux1].pos_Y-ymax)*scale; //(form1.robots[aux1].pos_y*200-1.1*200;
+     end;
      end;
   end;
   if ToggleBox1.Checked=True then
@@ -643,7 +615,7 @@ procedure TForm2.FormShow(Sender: TObject);
 
 begin
  Print_map_in_GLS(form1.ws,form1.full_nodelist,10,GLScene3,GLDummyCube3,200);
- Print_robot_position_GLS(form1.robots,200,GLScene3,GLDummyCube3,15,25);
+ Print_robot_position_GLS(form1.robots,200,GLScene3,GLDummyCube3,20,30);
  printedmap:=1;
  l1:=length(form1.robots);
  label2.Caption:=inttostr(l1);
@@ -656,6 +628,7 @@ begin
   r_ID:=strtoint(labelededit1.Text);
   ws_ID:=strtoint(labelededit2.Text);
   l1:=length(form1.robots);
+  if l1=3 then begin
   for aux1:=0 to l1-1 do
   begin
     r_id_curr:=form1.robots[aux1].id_robot;
@@ -669,6 +642,7 @@ begin
        //form1.robots[aux1].target_node:=form1.ws[ws_ID-1];
     end;
   end;
+  end;
 end;
 
 procedure TForm2.Button2Click(Sender: TObject);
@@ -679,10 +653,12 @@ begin
      coms_flaws_random:=0;
   end;
   //Setrobotsrestspot(form1.full_nodelist,form1.robots,form3.wos);
-  Application.CreateForm(TFMain, FMain);
-  Application.CreateForm(TFControlo, FControlo);
-  FMain.Show;
+ // Application.CreateForm(TFMain, FMain);                        DESCOMENTADOS
+  Application.CreateForm(TFControlo, FControlo);               // DESCOMENTADOS
+ // FMain.Show;
   FControlo.Show;
+  FRobot_Configuration.Show;
+  FRobot_Configuration.Button2.Visible:=False;
 end;
 
 procedure TForm2.Button3Click(Sender: TObject);

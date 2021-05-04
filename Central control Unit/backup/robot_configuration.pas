@@ -1,5 +1,7 @@
 unit Robot_Configuration;
 
+//comunica com os robots e com o sistema de localizaçao
+
 {$mode objfpc}{$H+}
 
 interface
@@ -62,7 +64,19 @@ type
     Label27: TLabel;
     Label28: TLabel;
     Label29: TLabel;
+    Label3: TLabel;
+    Label30: TLabel;
+    Label31: TLabel;
+    Label32: TLabel;
+    Label33: TLabel;
+    Label34: TLabel;
+    Label35: TLabel;
+    Label36: TLabel;
+    Label37: TLabel;
+    Label38: TLabel;
+    Label39: TLabel;
     Label4: TLabel;
+    Label40: TLabel;
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
@@ -130,8 +144,17 @@ var
 
 implementation
  uses
-   unit2,unit3, unit1;
+   unit2,unit3, unit1, controlo;
 {$R *.lfm}
+
+function round2(const Number: extended; const Places: longint): extended;
+var t: extended;
+begin
+  //Rounds a float value to X decimal points
+   t := power(10, places);
+   round2 := round(Number*t)/t;
+end;
+
 
 { TFRobot_Configuration }
 
@@ -245,7 +268,7 @@ end;
 procedure TFRobot_Configuration.UDPRobotReceive(aSocket: TLSocket);
 var
   msg, res, info, Robot_IP: string;
-  n, i, id, robot: integer;
+  n, i, id, k, robot: integer;
   A, aux: TStringArray;
   pos_x, pos_y, pos_z, pos_theta, gotoxy_robot, x_f, y_f, theta_f: integer;
 
@@ -265,14 +288,14 @@ begin
               Delete(res, 1,1);
               id := StrToInt(res);
 
-              if id = 23 then begin
-                 n:=0;
+              if id = 43 then begin
+                 n:=2;
               end
               else if id = 33 then begin
                  n:=1;
               end
-              else if id = 43 then begin
-                 n:=2;
+              else if id = 23 then begin
+                 n:=0;
               end;
 
         //rpi envia a posicao em centimetro- necessario passar para metros pq o mapa esta em metros
@@ -282,45 +305,55 @@ begin
               pos_robot[n][1]:= (StrToInt(aux[0])/100);
               aux := aux[1].Split('t');
               pos_robot[n][2]:= StrToInt(aux[0])/100;
-              pos_robot[n][3]:= degtorad(StrToInt(aux[1]));
+              pos_robot[n][3]:= degtorad(StrToInt(aux[1]));  //guardamos o angulo em radianos
 
           end;
 
-           pos_robot[1][1]:= -(pos_robot[1][1]);
+
+
+   //prints
 
           Label16.Caption := 'Xini: ' + pos_robot[0][0].ToString;
           Label17.Caption := 'Yini: ' + pos_robot[0][1].ToString;
           Label18.Caption := 'Zini: ' + pos_robot[0][2].ToString;
-          Label19.Caption := 'Thetaini: ' + radtodeg(pos_robot[0][3]).ToString;
+          Label19.Caption := 'Thetaini: ' + (round2(pos_robot[0][3],2)).ToString;
 
           //Label19.Caption := 'id: 33- robot 2';
           Label21.Caption := 'Xini: ' + pos_robot[1][0].ToString;
           Label22.Caption := 'Yini: ' + pos_robot[1][1].ToString;
           Label23.Caption := 'Zini ' + pos_robot[1][2].ToString;
-          Label24.Caption := 'Thetaini: ' + radtodeg(pos_robot[1][3]).ToString;
+          Label24.Caption := 'Thetaini: ' + round2(pos_robot[1][3],2).ToString;
 
           //Label24.Caption := 'id: 43- robot 3';
           Label26.Caption := 'Xini: ' + pos_robot[2][0].ToString;
           Label27.Caption := 'Yini: ' + pos_robot[2][1].ToString;
           Label28.Caption := 'Zini ' + pos_robot[2][2].ToString;
-          Label29.Caption := 'Thetaini: ' + radtodeg(pos_robot[2][3]).ToString;
+          Label29.Caption := 'Thetaini: ' + round2(pos_robot[2][3],2).ToString;
 
-         (* if GOTOXYTHETA.Enabled=false then begin
-             robot := StrToInt(EditRobotGOTOXY.Text);
-             x_f := StrToInt(GOTOXY_x.Text);
-             y_f := StrToInt(GOTOXY_y.Text);
-             theta_f := StrToInt(GOTOXY_theta.Text);
-             gotoXYTheta_control(robot-1, x_f, y_f, theta_f);
-          end;    *)
-      //  unit1.gotoXYTheta(2, 1, 1, 0);
-      //  EditM0Speed.Text := v1[0].ToString;
-      //  EditM1Speed.Text := v2[0].ToString;
-     //   Label29.Caption := v1[2].ToString;
-     //   Label30.Caption := v2[2].ToString;
+          if (Button2.Visible=False) then begin
+
+            FControlo.Label1.Caption := 'X: ' + (round2(form1.robots[0].pos_X,2)).ToString;
+            FControlo.Label2.Caption := 'Y: ' + (round2(form1.robots[0].pos_Y,2)).ToString;
+            FControlo.Label4.Caption := 'Direction: ' + (form1.robots[0].Direction).ToString;
 
 
+            FControlo.Label5.Caption := 'X: ' + (round2(form1.robots[1].pos_X,2)).ToString;
+            FControlo.Label6.Caption := 'Y: ' + (round2(form1.robots[1].pos_Y,2)).ToString;
+            FControlo.Label8.Caption := 'Direction: ' + (form1.robots[1].Direction).ToString;
 
-    // end;
+
+            FControlo.Label9.Caption := 'X: ' + (round2(form1.robots[2].pos_X,2)).ToString;
+            FControlo.Label10.Caption := 'Y: ' + (round2(form1.robots[2].pos_Y,2)).ToString;
+            FControlo.Label12.Caption := 'Direction: ' + (form1.robots[2].Direction).ToString;
+
+          end;
+
+          if (Button2.Visible=False) then begin          //significa que o form foi chamado já na fase de coordenaçao e não de configuração
+                 //VerificaFalha(n);
+                 //UpdateInitialPoints(n);
+                flagVelocities:=true;
+                FControlo.Controlo_Algoritmo(n);
+          end;
 
   end;
 end;

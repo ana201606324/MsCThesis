@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, lNetComponents, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, ExtCtrls, lNet, TEAstar, laz2_DOM, laz2_XMLRead, math, Utils3DS,Utils;
+  Dialogs, StdCtrls, ExtCtrls, lNet, TEAstar, robot_control, laz2_DOM, laz2_XMLRead, math, Utils3DS,Utils;
 
 const
   THRESHOLD_DIST = 0.033;//0.025;
@@ -58,9 +58,19 @@ type
     Edit7: TEdit;
     Edit8: TEdit;
     Edit9: TEdit;
+    Label1: TLabel;
+    Label10: TLabel;
+    Label12: TLabel;
+    Label2: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
     LabeledEdit1: TLabeledEdit;
     SendButton: TButton;
     Edit1: TEdit;
+    SendButton1: TButton;
     TimerSend: TTimer;
     udpCom: TLUDPComponent;
     //procedure Coms_timeout_timerTimer(Sender: TObject);
@@ -68,8 +78,9 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure SendButtonClick(Sender: TObject);
-    procedure TimerSendTimer(Sender: TObject);
-    procedure udpComReceive(aSocket: TLSocket);
+   // procedure TimerSendTimer(Sender: TObject);
+    procedure Controlo_Algoritmo(var n: integer);
+    procedure RobotComunication(var ind_robo: integer);
   private
     { private declarations }
   public
@@ -96,8 +107,8 @@ type
     //procedure UpdateThetaDestPi(robot:integer;thetaCam:double);
     //procedure UpdateThetaDestToMoveBack(robot:integer;thetaCam:double);
     //procedure UpdateThetaDestAfterPiRotation(robot:integer;thetaCam:double);
-    procedure UnpackUDPmessage(var xCam:array of double;var yCam:array of double; var thetaCam:array of double; var id_rob:integer ;data:string);
-    procedure UpdateInitialPoints(var xCam:array of double;var yCam:array of double; var thetaCam:array of double; var id_rob:integer);
+    //procedure UnpackUDPmessage(var xCam:array of double;var yCam:array of double; var thetaCam:array of double; var id_rob:integer ;data:string);
+    procedure UpdateInitialPoints(var id_rob:integer);
     procedure UpdateSubmissions(var agvs:r_node;i:integer);
 
 
@@ -172,9 +183,10 @@ var
   b_pathsend:integer;
   unflawed_node:array of integer;
   flaw_location:coms_flaw_location;
+  flaginit:boolean;
 implementation
  uses
-   unit1,unit2;
+   unit1,unit2, Robot_Configuration;
 {$R *.lfm}
 
 { Functions/Procedures }
@@ -1181,7 +1193,7 @@ var
   v:integer;
 begin
     //Inicialize all the points for the robots in the simtwo simulator
-    MessageInitialPositions := '';
+  (*  MessageInitialPositions := '';
     MessageInitialPositions := MessageInitialPositions + 'T' + IntToStr(NUMBER_ROBOTS);
     v:=0;
     while v < NUMBER_ROBOTS do begin
@@ -1194,7 +1206,7 @@ begin
       yDest[v]:=agvs[v].pos_Y;
       v:=v+1;
     end;
-    MessageInitialPositions := MessageInitialPositions + 'F';
+    MessageInitialPositions := MessageInitialPositions + 'F';   *)
 end;
 
 function checkforpathcompletion(agvs:r_node; i:integer):integer;
@@ -1364,7 +1376,6 @@ end;
                     end
                    end;
                  if onode>length(form1.full_nodelist) then begin
-
                  end else begin
                       if  onode=lnode then begin
                           r:=1;
@@ -1693,9 +1704,10 @@ begin
    checkinterval:=r;
 end;
 
+ // DESNECESSARIO
 
-//SIMTWO
-procedure UnpackUDPmessage(var xCam:array of double;var yCam:array of double; var thetaCam:array of double; var id_rob:integer;data:string);
+//procedure UnpackUDPmessage(var xCam:array of double;var yCam:array of double; var thetaCam:array of double; var id_rob:integer;data:string);
+procedure VerificaFalha(var id_rob:integer);
 var
     i,j:integer;
     X_a,Y_a:Double;
@@ -1703,16 +1715,17 @@ var
     xCamStr,id_robstr,coms_countstr,yCamStr,thetaCamStr:string;
 begin
    //Unpacks and interpects the data sent by the simtwo simulation software
+
     j:=2;
-    if (data<>'') then begin
-      if (data[j]<>'F') then begin
+   // if (data<>'') then begin
+    (*  if (data[j]<>'F') then begin
            while (data[j]<>'C') do begin
                id_robstr := id_robstr + data[j];
                j:=j+1;
             end;
             j:=j+1;
             while (data[j]<>'X') do begin
-               coms_countstr := coms_countstr + data[j];
+               coms_countstr := coms_countstr + data[j];   //ATENCAO COMS_COUNTSTR
                j:=j+1;
             end;
             j:=j+1;
@@ -1731,89 +1744,102 @@ begin
             while ((data[j]<>'F')) do begin
                thetaCamStr := thetaCamStr + data[j];
                j:=j+1;
-            end;
+            end; *)
 
-            X_a:=StrToFloat(xCamStr);
-            Y_a:=StrToFloat(yCamStr);
-            if ((checkinterval(X_a,Y_a)=1) or ((form2.coms_flaws_random=1) and (random(99)<f_percent))) then
+            X_a:= pos_robot[id_rob][0]; //X_a:=StrToFloat(xCamStr);
+            Y_a:= pos_robot[id_rob][1]; //Y_a:=StrToFloat(yCamStr);
+
+            if ((checkinterval(X_a,Y_a)=1) or ((form2.coms_flaws_random=1) and (random(99)<f_percent))) then //se tiver falha
             begin
-            id_rob:= Strtoint(id_robstr);
-            a_c_flaw[id_rob-1]:=1;
-            xCam[id_rob-1] := 9999999;
-            yCam[id_rob-1] := 9999999;
-            thetaCam[id_rob-1] := 9999999;
-            end else begin
-            id_rob:= Strtoint(id_robstr);
-            c_a:=Strtoint(coms_countstr);
-            xCam[id_rob-1] := StrToFloat(xCamStr);
-            yCam[id_rob-1] := StrToFloat(yCamStr);
-            thetaCam[id_rob-1] := StrToFloat(thetaCamStr);
-            a_c_flaw[id_rob-1]:=0;
-            if c_a=999 then begin
-              coms_count[id_rob-1]:=0;
-            end else begin
-               coms_count[id_rob-1]:=c_a;
+              //id_rob:= Strtoint(id_robstr);
+              a_c_flaw[id_rob]:=1;
+              //xCam[id_rob-1] := 9999999;
+               pos_robot[id_rob][0]:= 9999999;
+              //yCam[id_rob-1] := 9999999;
+               pos_robot[id_rob][1]:= 9999999;
+              //thetaCam[id_rob-1] := 9999999;
+               pos_robot[id_rob][3]:= 9999999;
+            end else begin   //nao tendo falha, guarda se a posicao nos vetores xcam, ycam e depois passa-se para a estrutura robots na funcao update robots ?
+              //id_rob:= Strtoint(id_robstr);
+              c_a:=Strtoint(coms_countstr);   //contador de mensagens
+              //xCam[id_rob-1] := StrToFloat(xCamStr);
+              //yCam[id_rob-1] := StrToFloat(yCamStr);
+              //thetaCam[id_rob-1] := StrToFloat(thetaCamStr);
+              a_c_flaw[id_rob]:=0;
+              if c_a=999 then begin
+                coms_count[id_rob]:=0;
+              end else begin
+                 coms_count[id_rob]:=c_a;
+              end;
             end;
-            end;
-            xCamStr:='';
-            yCamStr:='';
-            thetaCamStr:='';
-            id_robstr:='';
+           // xCamStr:='';
+           // yCamStr:='';
+           // thetaCamStr:='';
+           // id_robstr:='';
             coms_countstr:='';
-         end;
-      end;
+         //end;
+      //end;
 end;
 
 
 
-procedure UpdateInitialPoints(var xCam:array of double;var yCam:array of double; var thetaCam:array of double; var id_rob:integer);
+procedure UpdateInitialPoints(var id_rob:integer);
 var
     s1,i:integer;
+    thetaCam: double;
 begin
+
+
         //Updates the robot position and associates it to a node of the graph that represents the factory floor map
-        i:=id_rob-1;
-        form1.robots[i].pos_X := xCam[i];
-        form1.robots[i].pos_Y:= yCam[i];
+        i:=id_rob;
+        form1.robots[i].pos_X := pos_robot[i][0]; //xCam;
+        form1.robots[i].pos_Y:= pos_robot[i][1];//yCam;
+        form1.robots[i].angle:= pos_robot[i][3];
         if init[i]=0 then
         begin
-        form1.robots[i].inicial_node:=get_closest_node_id(form1.full_nodelist,form1.robots[i].pos_X ,form1.robots[i].pos_Y,1);
-        if check_array( unflawed_node,form1.robots[i].inicial_node)=0 then begin
-        s1:=length( unflawed_node);
-        setlength( unflawed_node,s1+1);
-        unflawed_node[s1]:=form1.robots[i].inicial_node;
-        flaw_location:=check_if_flaw_ceased(form1.robots[i].inicial_node,flaw_location);
+          form1.robots[i].inicial_node:=get_closest_node_id(form1.full_nodelist,form1.robots[i].pos_X ,form1.robots[i].pos_Y,1);
+          if check_array( unflawed_node,form1.robots[i].inicial_node)=0 then begin
+            s1:=length( unflawed_node);
+            setlength( unflawed_node,s1+1);
+            unflawed_node[s1]:=form1.robots[i].inicial_node;
+            flaw_location:=check_if_flaw_ceased(form1.robots[i].inicial_node,flaw_location);
+          end;
+          init[i]:=checkfornode(form1.full_nodelist, form1.robots[i].pos_X ,form1.robots[i].pos_Y,1);
+           //init[i]:=0;
+        end else begin
+           form1.robots[i].inicial_node:=updaterobotnode(form1.full_nodelist,form1.robots[i].pos_X ,form1.robots[i].pos_Y,1,i);
         end;
-            init[i]:=checkfornode(form1.full_nodelist, form1.robots[i].pos_X ,form1.robots[i].pos_Y,1);
-         //init[i]:=0;
-        end
-        else
-        begin
-        form1.robots[i].inicial_node:=updaterobotnode(form1.full_nodelist,form1.robots[i].pos_X ,form1.robots[i].pos_Y,1,i);
-        end;
-        if ((thetaCam[i] <= pi/2 + THRESHOLD_ANGLE) and (thetaCam[i] >= pi/2 - THRESHOLD_ANGLE)) then begin
+
+         //FControlo.Label3.Caption:='OLA '+intTostr(i);
+        //TRANSFORMA ORIENTACAO DO ROBOT NA DIRECAO DA ROSA DOS VENTOS
+
+        thetaCam:= pos_robot[i][3];
+
+        if ((thetaCam <= pi/2 + THRESHOLD_ANGLE) and (thetaCam >= pi/2 - THRESHOLD_ANGLE)) then begin
              form1.robots[i].Direction := 0;
         end
-        else if ((thetaCam[i] <= pi/4 + THRESHOLD_ANGLE) and (thetaCam[i] >= pi/4 - THRESHOLD_ANGLE)) then begin
+        else if ((thetaCam <= pi/4 + THRESHOLD_ANGLE) and (thetaCam >= pi/4 - THRESHOLD_ANGLE)) then begin
               form1.robots[i].Direction:= 1;
         end
-        else if ((thetaCam[i] <= 0 + THRESHOLD_ANGLE) and (thetaCam[i] >= 0 - THRESHOLD_ANGLE)) then begin
+        else if ((thetaCam <= 0 + THRESHOLD_ANGLE) and (thetaCam >= 0 - THRESHOLD_ANGLE)) then begin
               form1.robots[i].Direction:= 2;
         end
-        else if ((thetaCam[i] <= -pi/4 + THRESHOLD_ANGLE) and (thetaCam[i] >= -pi/4 - THRESHOLD_ANGLE)) then begin
+        else if ((thetaCam <= -pi/4 + THRESHOLD_ANGLE) and (thetaCam >= -pi/4 - THRESHOLD_ANGLE)) then begin
              form1.robots[i].Direction := 3;
         end
-        else if ((thetaCam[i] <= -pi/2 + THRESHOLD_ANGLE) and (thetaCam[i] >= -pi/2 - THRESHOLD_ANGLE)) then begin
+        else if ((thetaCam <= -pi/2 + THRESHOLD_ANGLE) and (thetaCam >= -pi/2 - THRESHOLD_ANGLE)) then begin
               form1.robots[i].Direction:= 4;
         end
-        else if ((thetaCam[i] <= -pi*1.25 + THRESHOLD_ANGLE) and (thetaCam[i] >= -pi*1.25 - THRESHOLD_ANGLE)) then begin
+        else if ((thetaCam <= -pi*1.25 + THRESHOLD_ANGLE) and (thetaCam >= -pi*1.25 - THRESHOLD_ANGLE)) then begin
               form1.robots[i].Direction := 5;
         end
-        else if (((thetaCam[i] <= pi + THRESHOLD_ANGLE) and (thetaCam[i] >= pi - THRESHOLD_ANGLE)) or
-                 ((thetaCam[i] <= -pi + THRESHOLD_ANGLE) and (thetaCam[i] >= -pi - THRESHOLD_ANGLE)))
-        then begin
+        else if ((thetaCam <= pi + THRESHOLD_ANGLE) and (thetaCam >= pi - THRESHOLD_ANGLE)) then begin
               form1.robots[i].Direction := 6;
         end
-        else if ((thetaCam[i] <= pi*1.25 + THRESHOLD_ANGLE) and (thetaCam[i] >= pi*1.25 - THRESHOLD_ANGLE)) then begin
+        else if ((thetaCam <= -pi + THRESHOLD_ANGLE) and (thetaCam >= -pi - THRESHOLD_ANGLE)) then begin
+              form1.robots[i].Direction := 6;
+        end
+        else if ((thetaCam <= pi*1.25 + THRESHOLD_ANGLE) and (thetaCam >= pi*1.25 - THRESHOLD_ANGLE)) then begin
              form1.robots[i].Direction := 7;
         end;
 end;
@@ -1921,143 +1947,119 @@ end;
 
 
 
+
 { TFControlo }
 
-procedure TFControlo.udpComReceive(aSocket: TLSocket);
+// procedure TFControlo.udpComReceive(var n: integer);
+procedure TFControlo.Controlo_Algoritmo(var n: integer);
 var
-    data : string;
-    i : integer;
+
+    msg : string;
+    q, i, k: integer;
     ttttt:integer;
     xCam,yCam,thetaCam: array[0..NUMBER_ROBOTS-1] of double;
     s1,aux_exit_flaw_node,cont,cont2,aux_step_complete,s4,n_curr,aux1,idf:integer;
 
 begin
-    //Communication reception of messages
-    t1:=GetTickCount64();
-    udpCom.GetMessage(data);
 
-    if data <> '' then begin
-      Edit1.Text:= data;
-      Edit1.Color:= clgreen;
-    end else begin
-      Edit1.Text:= 'Erro';
-      Edit1.Color:= clred;
-    end;
+ //t1:=GetTickCount64();
 
-    if data <> '' then begin
-       Edit2.Text:=data[1];
-    end;
+ //Faz um update das posiçoes dos robots e restabelece a comunicacao com robots saidos de falhas
+ for q:=0 to NUMBER_ROBOTS-1 do begin
 
+   //verifica se conseguimos localizar o robot
+   if ((pos_robot[q][0]<>9999999) and (pos_robot[q][1]<>9999999) and (pos_robot[q][3]<>9999999)) then begin
+     k:=q;
+     UpdateInitialPoints(k);
+     UpdateSubmissions(form1.robots,q);
 
-    Edit8.Text:=FloatToStr(linearVelocities[0]);
-    Edit9.Text:=FloatToStr(linearVelocities[1]);
-
-
-    if (data <> '') then begin
-        if ((flagVelocities = true) and (data[1] = 'R')) then begin
-          Edit2.Text:='Hello';
-          //Analyse of the received messages
-          UnpackUDPmessage(xCam,yCam,thetaCam,id_rob,data);
-
-          if ((xCam[id_rob-1]<>9999999) and (yCam[id_rob-1]<>9999999) and (thetaCam[id_rob-1]<>9999999)) then begin
-          //update of the robot position and of it's current submissions
-          UpdateInitialPoints(xCam,yCam,thetaCam,id_rob);
-         // ttttt:=unflawed_node[0];
-          UpdateSubmissions(form1.robots,id_rob-1);
-          timestamp_coms[id_rob-1]:=total_seconds;
-          //Checks if the robot as a  fault active (fault exit control)
-          if robots_flaws[id_rob-1].isactive=1 then begin
-          s4:=length(form1.full_nodelist);
-          idf:=0;
-          for aux1:=0 to s4-1 do
-           begin
-           //Updates the fault dimention
-           n_curr:=form1.full_nodelist[aux1].id;
-           if n_curr=form1.robots[id_rob-1].inicial_node then
-           begin
-           idf:=n_curr;
+     //quando voltamos a ter comunicacao com o robot?
+     (*
+     if robots_flaws[q].isactive=1 then begin      //Checks if the robot as an active fault (fault exit control)
+        s4:=length(form1.full_nodelist);
+        idf:=0;
+        for aux1:=0 to s4-1 do begin
+            //Updates the fault dimention
+            n_curr:=form1.full_nodelist[aux1].id;
+            if n_curr=form1.robots[q].inicial_node then begin
+               idf:=n_curr;            //ultimo nó onde foi feita comunicacao com o robot
             end;
-           end;
-           if idf=0 then begin
-           //aux_exit_flaw_node:=get_linked_node(form1.full_nodelist,agvs[i].pos_X,agvs[i].pos_y,1,CaminhosAgvs[i].coords[1].node);
-           //aux_exit_flaw_node:=get_futhrest_exit_link_node(form1.map,form1.robots,id_rob-1,CaminhosAgvs_af,current_step_f[id_rob-1],unflawed_node);
+        end;
+        aux_exit_flaw_node:=idf;
+        robots_flaws[q].curr_out_node:=aux_exit_flaw_node;
+        Update_missions_in_flaw(form1.robots,CaminhosAgvs_af,q,robots_flaws,current_step_f[q]);
+        f_replan:=1;
+        if robots_flaws[q].isdetecting=1 then begin
+           robots_flaws[q].isdetecting:=0;
+           flaw_location:=save_exit_node(form1.map,form1.robots,q,robots_flaws,flaw_location,unflawed_node);
+           //robots_flaws[id_rob-1].detected_nodes:=update_flaw_path(form1.robots,id_rob-1,CaminhosAgvs);
+        end else begin
+           if check_array(flaw_location.in_node[robots_flaws[q].flaw_ind],aux_exit_flaw_node)=1 then begin
            end else begin
-           aux_exit_flaw_node:=idf;
-           robots_flaws[id_rob-1].curr_out_node:=aux_exit_flaw_node;
-           Update_missions_in_flaw(form1.robots,CaminhosAgvs_af,id_rob-1,robots_flaws,current_step_f[id_rob-1]);
-           f_replan:=1;
-           if robots_flaws[id_rob-1].isdetecting=1 then begin
-              robots_flaws[id_rob-1].isdetecting:=0;
-              flaw_location:=save_exit_node(form1.map,form1.robots,id_rob-1,robots_flaws,flaw_location,unflawed_node);
-                //robots_flaws[id_rob-1].detected_nodes:=update_flaw_path(form1.robots,id_rob-1,CaminhosAgvs);
-             end else begin
-                 if check_array(flaw_location.in_node[robots_flaws[id_rob-1].flaw_ind],aux_exit_flaw_node)=1 then begin
-                end else begin
-                  flaw_location:=update_afected_nodes(flaw_location,robots_flaws,id_rob-1,unflawed_node,current_step_f[id_rob-1]);
-                end;
-                end;
+              flaw_location:=update_afected_nodes(flaw_location,robots_flaws,q,unflawed_node,current_step_f[q]);
+           end;
+        end;
+        robots_flaws[q].isactive:=0;
+     end;   *)
+    end;
+   end;
 
-                robots_flaws[id_rob-1].isactive:=0;
-          end;
-          end;
-          end;
-          i:=0;
-          while i<NUMBER_ROBOTS do begin
-              //Normal communication with the robot
-              if ((type_of_movement[i]=0)) then begin
-                 //Initiates the TEA* planning algorithm
-                 Edit4.Text:='TEA_Init';
-                  followLine[i]:=false;
-                  followCircle[i]:=false;
-                  rotate[i]:=false;
 
-                  UpdateSubmissions(form1.robots,i);
+ //novo ciclo para replanear trajetorias
+   i:=0;
+ while i<NUMBER_ROBOTS do begin
+       //Normal communication with the robot
+       if ((type_of_movement[i]=0)) then begin //o robot não está em wait (=1), rotate (=2) ou go foward (=3)
+       //Initiates the TEA* planning algorithm
+            Edit4.Text:='TEA_Init';
+            followLine[i]:=false;
+            followCircle[i]:=false;
+            rotate[i]:=false;
 
-                  TEArun(form1.map,form1.robots,CaminhosAgvs);
-                  for aux1:=0 to NUMBER_ROBOTS-1 do begin
-                  current_step[aux1]:=1;
-                  end;
-                  //Detects a priority change and leaves the cycle so that the information isn't store with the wrong indexes
-                  if ((flagChange = true) and (totalTrocas < MAX_EXCHANGES) and (totalTrocas <> totalValidations)) then begin
-                    flagChange:=false;
-                    totalTrocas:=0;
-                    totalValidations:=0;
-                    break;
-                  end
-                  else begin
-                    trocas:=0;
-                    totalTrocas:=0;
-                  end;
-                  step_complete:=check_step_comp(CaminhosAgvs,form1.robots,current_step);
-                  //timestamp_coms[i]:=total_seconds;
-              end else if ((timestamp_coms[i]+2<=total_seconds) and (type_of_movement[i]<>0) and (timestamp_coms[i]<>0))  then begin
+            UpdateSubmissions(form1.robots,i);
 
-              //coms flaw no communication with robot
-              if robots_flaws[i].isactive=0 then begin
+            TEArun(form1.map,form1.robots,CaminhosAgvs);
+
+            for aux1:=0 to NUMBER_ROBOTS-1 do begin
+                current_step[aux1]:=1;
+            end;
+
+            //Detects a priority change and leaves the cycle so that the information isn't store with the wrong indexes
+            if ((flagChange = true) and (totalTrocas < MAX_EXCHANGES) and (totalTrocas <> totalValidations)) then begin
+                flagChange:=false;
+                totalTrocas:=0;
+                totalValidations:=0;
+                break;
+            end else begin
+                trocas:=0;
+                totalTrocas:=0;
+            end;
+            step_complete:=check_step_comp(CaminhosAgvs,form1.robots,current_step);
+            timestamp_coms[i]:=total_seconds;
+       end else if ((timestamp_coms[i]+2<=total_seconds) and (type_of_movement[i]<>0) and (timestamp_coms[i]<>0))  then begin
+            //coms flaw no communication with robot
+            if robots_flaws[i].isactive=0 then begin
                flaw_location:=save_flaw_location(form1.map,CaminhosAgvs,form1.robots,i,form1.full_nodelist,current_step[i],flaw_location,robots_flaws,unflawed_node);
                //robots_flaws[i].isactive:=1;
                ttttt:=length(flaw_location.in_node[0]);
                current_step_f[i]:= current_step[i];
                f_replan:=1;
-               end else begin
+            end else begin
                 robots_flaws[i].active_consecutive_hits:= robots_flaws[i].active_consecutive_hits+1;
-               end;
-               timestamp_coms[i]:=total_seconds;
-              end else begin
+            end;
+            timestamp_coms[i]:=total_seconds;
+       end else begin
               step_complete:=check_step_comp(CaminhosAgvs,form1.robots,current_step);
               if i=0 then begin
-              Edit7.Text:=inttostr(current_step[i]);
+                 Edit7.Text:=inttostr(current_step[i]);
               end else if i=1 then begin
-              Edit8.Text:=inttostr(current_step[i]);
+                  Edit8.Text:=inttostr(current_step[i]);
               end else if i=2 then begin
-              Edit8.Text:=inttostr(current_step[i]);
+                  Edit8.Text:=inttostr(current_step[i]);
               end else if i=3 then begin
-              Edit9.Text:=inttostr(current_step[i]);
+                  Edit9.Text:=inttostr(current_step[i]);
               end;
-              {if ((step_complete[i]=0) or  (type_of_movement[i]=1)) then begin
-                  Edit4.Text:='MOVE';
-              end}
-               if ((check_if_still_on_path(CaminhosAgvs,Form1.robots,i,0.05,current_step)=1) or (f_replan=1) or (max_diff_step(current_step)>1) or (check_if_too_ahead_on_step(CaminhosAgvs,Form1.robots,current_step)=1) or (check_if_too_close(form1.robots)=1) {or (checkforflaws(robots_flaws)=1)}) then begin
+              if ((check_if_still_on_path(CaminhosAgvs,Form1.robots,i,0.05,current_step)=1) or (f_replan=1) or (max_diff_step(current_step)>1) or (check_if_too_ahead_on_step(CaminhosAgvs,Form1.robots,current_step)=1) or (check_if_too_close(form1.robots)=1) {or (checkforflaws(robots_flaws)=1)}) then begin
                  // if check_if_still_on_path(CaminhosAgvs,Form1.robots,i,0.05,current_step)=1 then
                  // begin
                   b_pathsend:=1;  //blocks the sending of a error filled path mid planning
@@ -2086,137 +2088,165 @@ begin
                   step_complete:=check_step_comp(CaminhosAgvs,form1.robots,current_step);
                   f_replan:=0;
                   b_pathsend:=0;
-                 { end else if check_if_still_on_path(CaminhosAgvs,Form1.robots,i,0.05,current_step)=0 then
-                  begin
-                     Edit4.Text:='Next_Step';
-                     //current_step[i]:=current_step[i]+1;
-                 end;}
-                 break;
+                  break;
               end else begin
                     if ((step_complete[i]=0) and  (type_of_movement[i]<>1)) then begin
                         Edit4.Text:='MOVE';
-                     end else if ((type_of_movement[i]=1))then begin
-                         cont:=0;
-                         cont2:=0;
-                         for aux1:=0 to NUMBER_ROBOTS-1 do begin
-                          if type_of_movement[aux1]<>1 then begin
-                             cont:=cont+1;
-                          end;
-                          if ((step_complete[aux1]=1) or (current_step[aux1]>current_step[i]) and (aux1<>i)) then begin
-                             cont2:=cont2+1;
-                          end;
-                      end;
+                    end else if ((type_of_movement[i]=1))then begin
+                        cont:=0;
+                        cont2:=0;
+                        for aux1:=0 to NUMBER_ROBOTS-1 do begin
+                            if type_of_movement[aux1]<>1 then begin
+                                 cont:=cont+1;
+                            end;
+                            if ((step_complete[aux1]=1) or (current_step[aux1]>current_step[i]) and (aux1<>i)) then begin
+                                 cont2:=cont2+1;
+                            end;
+                         end;
                          if ((cont2>=cont) and ((checkforflaws(robots_flaws)=0))) then begin
-                           Edit4.Text:='Next_Step';
-                           // UpdateSubmissions(form1.robots,i);
-                           current_step[i]:=current_step[i]+1;
-                           end;
+                            Edit4.Text:='Next_Step';
+                            // UpdateSubmissions(form1.robots,i);
+                            current_step[i]:=current_step[i]+1;
+                         end;
 
                      end else  begin
                          Edit4.Text:='Next_Step';
                          //UpdateSubmissions(form1.robots,i);
                          current_step[i]:=current_step[i]+1;
                      end;
-
               end;
-              end;
-              i:=i+1;
-          end;
-        end;
-    end;
+       end;
+       i:=i+1;
+ end;
+ current_step_s:=current_step;
+ CaminhosAgvs_s:=CaminhosAgvs;
+ i:=0;
 
-    current_step_s:=current_step;
-    CaminhosAgvs_s:=CaminhosAgvs;
-    if data = 'MIP1' then begin
-        flagMessageInitialPositions:=false;
-        //flagVelocities:=true;
-        Edit3.Text:='MIP1';
-    end;
-    t2:=GetTickCount64();
-    tick_p:=t2-t1;
-    Edit10.Text:=IntToStr(tick_p);
+ RobotComunication(i);
+
+
+ //t2:=GetTickCount64();
+ //tick_p:=t2-t1;
+ //Edit10.Text:=IntToStr(tick_p);
 end;
-procedure TFControlo.TimerSendTimer(Sender: TObject);
+
+//procedure TFControlo.TimerSendTimer(Sender: TObject);        //MENSAGEM ENVIADA PARA O CONTROLO DOS ROBOTS- SIMTWO
+procedure TFControlo.RobotComunication(var ind_robo: integer);
 var
-
+    matrix_steps:Matrix2D;
+    double_aux, q: double;
     l1:integer;
-    aux1:integer;
-    count:integer;
+    aux1, aux:integer;
+    count,k:integer;
     messagelist:Tstringlist;
+    N, S, P, I, T: integer;
 begin
-   //Sending of information regarding the robots paths based on a timer
-    if flagMessageInitialPositions = true then begin
-       udpCom.SendMessage(MessageInitialPositions, '127.0.0.1:9808');
-       ind_robo:=0;
-    end;
-    if ((form2.coms_flaws_random=1) and (random(99)<f_percent)) then begin
-      END ELSE if ((flagVelocities = true) {and (b_pathsend<>1)}) then begin
 
-        if ((ind_robo<NUMBER_ROBOTS) and (robots_flaws[ind_robo].isactive<>1))  then begin
-           if a_c_flaw[ind_robo]=0 then begin
-           messagelist:=TStringList.Create;
-           Ca[ind_robo]:=checkforpathcompletion(form1.robots,ind_robo);
-           messagelist.Add('N' + IntToStr( form1.robots[ind_robo].id_robot));
-           messagelist.Add('P' + IntToStr( form1.robots[ind_robo].InitialIdPriority));
-           messagelist.Add('S' + IntToStr(get_steps(CaminhosAgvs_s,ind_robo)-1));
-           l1:=length((CaminhosAgvs_s[ind_robo].coords));
-           count:=1;
-           for aux1:=current_step_s[ind_robo] to l1-1 do begin
-           if ((getXcoord(CaminhosAgvs_s[ind_robo].coords[aux1].node)<3) and (getYcoord(CaminhosAgvs_s[ind_robo].coords[aux1].node)<3) and (count<15) and (CaminhosAgvs_s[ind_robo].coords[aux1].node<>0)) then
-           begin
-           messagelist.Add('I' + IntToStr(count));
-           messagelist.Add('X' + FloatToStr(round2(getXcoord(CaminhosAgvs_s[ind_robo].coords[aux1].node),3)));
-           messagelist.Add('Y' + FloatToStr(round2(getYcoord(CaminhosAgvs_s[ind_robo].coords[aux1].node),3)));
-           messagelist.Add('D' + IntToStr(CaminhosAgvs_s[ind_robo].coords[aux1].direction));
-           count:=count+1;
-           end;
-           end;
-           if count<2 then
-           begin
-           messagelist.Add('T' + IntToStr(1));
+    FRobot_Configuration.Label36.Caption:= 'Robot Com inicio';
+   ind_robo:=0;
+
+
+ while ind_robo<NUMBER_ROBOTS do begin
+   //Sending of information regarding the robots paths based on a timer
+    (*if flagMessageInitialPositions = true then begin
+      // udpCom.SendMessage(MessageInitialPositions, '127.0.0.1:9808');
+       ind_robo:=0;
+    end; *)
+
+    if ((form2.coms_flaws_random=1) and (random(99)<f_percent)) then begin
+    end else if ((flagVelocities = true) {and (b_pathsend<>1)}) then begin
+
+        if ((ind_robo<NUMBER_ROBOTS) and (robots_flaws[ind_robo].isactive<>1))  then begin //SEM FALHA de comunicacao robots_flaws[ind_robo].isactive: robot dentro da falha
+
+           if a_c_flaw[ind_robo]=0 then begin     //sem falha de sincronizaçao no robot ind_robo
+             //messagelist:=TStringList.Create;
+             Ca[ind_robo]:=checkforpathcompletion(form1.robots,ind_robo);  //=1 se o robot ja tiver chegado ao no final/destino, 0 se nao
+             //messagelist.Add('N' + IntToStr( form1.robots[ind_robo].id_robot));
+             N:=form1.robots[ind_robo].id_robot;
+             //messagelist.Add('P' + IntToStr( form1.robots[ind_robo].InitialIdPriority));
+             P:= form1.robots[ind_robo].InitialIdPriority;
+             //messagelist.Add('S' + IntToStr(get_steps(CaminhosAgvs_s,ind_robo)-1));
+             S:= get_steps(CaminhosAgvs_s,ind_robo)-1;
+             l1:=length((CaminhosAgvs_s[ind_robo].coords));
+             count:=1;
+             SetLength(matrix_steps, 15, 3);
+             for aux1:=current_step_s[ind_robo] to l1-1 do begin
+               if ((getXcoord(CaminhosAgvs_s[ind_robo].coords[aux1].node)<3) and (getYcoord(CaminhosAgvs_s[ind_robo].coords[aux1].node)<3) and (count<15) and (CaminhosAgvs_s[ind_robo].coords[aux1].node<>0)) then
+               begin
+                 //posso mandar vetor com coordenadas dos proximos nos
+
+                 matrix_steps[count][0]:= round2(getXcoord(CaminhosAgvs_s[ind_robo].coords[aux1].node),3);
+                 matrix_steps[count][1]:= round2(getYcoord(CaminhosAgvs_s[ind_robo].coords[aux1].node),3);
+                 matrix_steps[count][2]:= CaminhosAgvs_s[ind_robo].coords[aux1].direction;
+
+                 //messagelist.Add('I' + IntToStr(count));
+                 //messagelist.Add('X' + FloatToStr(round2(getXcoord(CaminhosAgvs_s[ind_robo].coords[aux1].node),3)));
+                 //messagelist.Add('Y' + FloatToStr(round2(getYcoord(CaminhosAgvs_s[ind_robo].coords[aux1].node),3)));
+                 //messagelist.Add('D' + IntToStr(CaminhosAgvs_s[ind_robo].coords[aux1].direction));
+                 count:=count+1;
+               end;
+             end;
+             if count<2 then
+             begin
+                  //messagelist.Add('T' + IntToStr(1));
+                 T:=1;
+             end else begin
+                 //messagelist.Add('T' + IntToStr( Ca[ind_robo]));
+                 T:=Ca[ind_robo];
+             end;
+             //messagelist.Add('F');
+             //MessageVelocities:=messagelist.Text;
+             //udpCom.SendMessage(MessageVelocities, '127.0.0.1:9808');
+             flag_new[N-1]:=true;
+             FRobot_Configuration.Label37.Caption:='N: '+N.ToString+' P: '+ P.ToString+' S: '+S.ToString+' T: '+T.ToString+'';
+              //q:=pos_robot[1][0];
+             robot_control_main(N,P,S,matrix_steps,T);
+             SetLength(matrix_steps,0,0);
+
+            // messagelist.free;
+            // ind_robo:=ind_robo+1;
            end else begin
-           messagelist.Add('T' + IntToStr( Ca[ind_robo]));
+             //ind_robo:=ind_robo+1;
            end;
-           messagelist.Add('F');
-           MessageVelocities:=messagelist.Text;
-           udpCom.SendMessage(MessageVelocities, '127.0.0.1:9808');
-           messagelist.free;
-           ind_robo:=ind_robo+1;
-           end else begin
-            ind_robo:=ind_robo+1;
-           end;
-        end else begin
-        ind_robo:=0;
+        (*end else begin
+            ind_robo:=0;*)
         end;
-        Edit5.Text:=inttostr(form1.robots[0].Direction);
-        Edit6.Text:=inttostr(form1.robots[3].Direction);
+        //Edit5.Text:=inttostr(form1.robots[0].Direction);
+        //Edit6.Text:=inttostr(form1.robots[3].Direction);
         //Edit7.Text:=MessageVelocities1;
-        MessageVelocities1:='';
-        MessageVelocities:='';
+        //MessageVelocities1:='';
+        //MessageVelocities:='';
         ct:=1;
         s_time:=s_time+80;
-        if s_time>=1000 then begin
-         total_seconds:=total_seconds+1;
-         s_time:=0;
-    end;
-    end;
+       (* if s_time>=1000 then begin
+           total_seconds:=total_seconds+1;
+           s_time:=0;
+        end; *)
+     end;
+    aux:=aux+1;
+    ind_robo:=ind_robo+1;
+end;
+
 end;
 
 procedure TFControlo.FormShow(Sender: TObject);
 var
     i:integer;
 begin
-    Edit1.Text:= 'Error';
+
+
+
+  (*  Edit1.Text:= 'Error';
     Edit1.Color:= clred;
 
     udpCom.Disconnect;
-    if udpCom.Connect('127.0.0.1', 4040) then begin   //CONEXAO COM O SIMTWO?
+    if udpCom.Connect('127.0.0.1', 4040) then begin  //LIGA AO SIMTWO
         Edit1.Text:= 'connection open';
         Edit1.Color:= clyellow;
     end;
     if udpCom.Listen(4040) then begin
         Edit1.Text:= 'open ports';
-    end;
+    end;  *)
 
     flagMessageInitialPositions:=true;
     flagVelocities:=false;
@@ -2229,7 +2259,7 @@ begin
     ind_robo:=0;
     b_pathsend:=0;
     f_replan:=0;
-    InitialPointsForAllRobots(form1.robots);
+  //  InitialPointsForAllRobots(form1.robots); //envia as posiçoes iniciais para o simtwo
 
 
     i:=0;
@@ -2257,9 +2287,13 @@ begin
     robots_flaws[i].isactive:=0;
     robots_flaws[i].isdetecting:=0;
     robots_flaws[i].active_consecutive_hits:=0;
+    robot_control.flagsign[aux1]:=false;
+
+    robot_control.dir[aux1]:=0;
     end;
 
 end;
+
 
 procedure TFControlo.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
@@ -2271,8 +2305,11 @@ var
     aux1:integer;
 begin
   for aux1:=0 to NUMBER_ROBOTS-1 do begin
-  pre_coms_count[aux1]:=10000
+    pre_coms_count[aux1]:=10000;
+
   end;
+  flaginit:=true;
+
 end;
 
 end.

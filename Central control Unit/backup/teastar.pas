@@ -34,7 +34,7 @@ const
 
 
   NUM_LAYERS = 210;
-  NUMBER_ROBOTS = 4;
+  NUMBER_ROBOTS = 3; //4
   MAX_EXCHANGES = 5;
   MAX_ITERATIONS = 125;
   MAX_SUBMISSIONS = 4;
@@ -114,9 +114,7 @@ type
      pos_Y:Double;
      Direction:integer;
      pDirection:integer;
-     ipos_X:Double;
-     ipos_Y:Double;
-     iDirection:integer;
+     angle:Double;         //rad
      SubMissions: array[0..MAX_SUBMISSIONS] of integer;
      NumberSubMissions: integer;
      TotalSubMissions: integer;
@@ -658,7 +656,7 @@ end;
 
 function TEAstep(var Map:TAStarMap; var agv:Robot_Pos_info; var steps:integer; var curPnt:integer; var curPnt_t_step:integer; var curr_dirr:integer):double;
 var
-    newPnt: integer;
+    newPnt, ola: integer;
     newPnt_step:integer;
     newPnt_dirr:integer;
     newG,auxCost: double;
@@ -727,6 +725,12 @@ begin
       if ((n2=0))  then
       begin
         t:=2;
+      end;
+      if n1=0 then begin
+         ola:=1;
+      end;
+      if n2=0 then begin
+         ola:=1;
       end;
       node_dirr:=get_node_dir(Map,n1,n2);
       rot:=node_dirr-curr_dirr;

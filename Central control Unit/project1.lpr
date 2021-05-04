@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, GLScene_RunTime, sdposeriallaz, lnetvisual, Unit1, Unit2, main,
-  controlo, Utils, Unit3, Robot_Configuration, udp_pc, unit4
+  controlo, Utils, Unit3, Robot_Configuration, Robot_Control
   { you can add units after this };
 
 {$R *.res}

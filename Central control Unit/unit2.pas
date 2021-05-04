@@ -91,7 +91,7 @@ var
   Matrix_int: array of array of integer;
 implementation
       uses
-   unit1,main,controlo,unit3;
+   unit1,main,controlo,unit3, robot_configuration;
 
 {$R *.lfm}
 
@@ -391,20 +391,22 @@ ymax:double;
     begin
     for aux1:=0 to l1-1 do
       begin
-         x:=(robotlist[aux1].pos_X-xmax)*scale;
-         y:=(robotlist[aux1].pos_Y-ymax)*scale;
-         newcube:=TGLCube.CreateAsChild(GLScene.Objects);
-         newcube.CubeHeight:=r_h;
-         newcube.CubeWidth:=r_w;
-         newcube.CubeDepth:=1;
-         newcube.Position.X:=x;
-         newcube.Position.y:=y;
-         newcube.Position.z:=1;
-         angle:=radtodeg(robotlist[aux1].angle);
-         newcube.RollAngle:=angle;
-         form1.robots[aux1].cube:=newcube;
-         //colour.
-         newcube.Material.FrontProperties.Ambient.RandomColor;
+        if robotlist[aux1].id_robot <> -1 then begin  //uma vez que o vetor robts é de dimensao fixa, verificamos se algum robot ja foi atribuido
+           x:=(robotlist[aux1].pos_X-xmax)*scale;
+           y:=(robotlist[aux1].pos_Y-ymax)*scale;
+           newcube:=TGLCube.CreateAsChild(GLScene.Objects);
+           newcube.CubeHeight:=r_h;
+           newcube.CubeWidth:=r_w;
+           newcube.CubeDepth:=1;
+           newcube.Position.X:=x;
+           newcube.Position.y:=y;
+           newcube.Position.z:=1;
+           angle:=radtodeg(robotlist[aux1].angle);
+           newcube.RollAngle:=angle;
+           form1.robots[aux1].cube:=newcube;
+           //colour.
+           newcube.Material.FrontProperties.Ambient.RandomColor;
+        end;
       end;
       end;
  end;
@@ -594,9 +596,10 @@ begin
      l1:=length(form1.robots);
      for aux1:=0 to l1-1 do
      begin
-
+      if form1.robots[aux1].id_robot<>-1 then begin
      form1.robots[aux1].cube.Position.X:=(form1.robots[aux1].pos_X-xmax)*scale; //form1.robots[aux1].pos_X*200-1.5*200;
      form1.robots[aux1].cube.Position.Y:=(form1.robots[aux1].pos_Y-ymax)*scale; //(form1.robots[aux1].pos_y*200-1.1*200;
+     end;
      end;
   end;
   if ToggleBox1.Checked=True then
@@ -612,7 +615,7 @@ procedure TForm2.FormShow(Sender: TObject);
 
 begin
  Print_map_in_GLS(form1.ws,form1.full_nodelist,10,GLScene3,GLDummyCube3,200);
- Print_robot_position_GLS(form1.robots,200,GLScene3,GLDummyCube3,15,25);
+ Print_robot_position_GLS(form1.robots,200,GLScene3,GLDummyCube3,20,30);
  printedmap:=1;
  l1:=length(form1.robots);
  label2.Caption:=inttostr(l1);
@@ -625,17 +628,19 @@ begin
   r_ID:=strtoint(labelededit1.Text);
   ws_ID:=strtoint(labelededit2.Text);
   l1:=length(form1.robots);
-  for aux1:=0 to l1-1 do
-  begin
-    r_id_curr:=form1.robots[aux1].id_robot;
-    if r_id_curr=r_ID then
+  if l1=3 then begin //debug
+    for aux1:=0 to l1-1 do
     begin
-       auxID:=get_ws_ID(ws_ID);
-       add_mission(form1.robots[aux1],form3.wos[auxID].node_id);
-       removerobotsrestspot(r_id_curr-1,form1.full_nodelist,form1.robots,form3.wos);
-       Setrobotsrestspot(r_id_curr-1,form1.full_nodelist,form1.robots,form3.wos);
-       t:=length(form1.robots[r_id_curr-1].SubMissions);
-       //form1.robots[aux1].target_node:=form1.ws[ws_ID-1];
+      r_id_curr:=form1.robots[aux1].id_robot;
+      if r_id_curr=r_ID then
+      begin
+         auxID:=get_ws_ID(ws_ID);
+         add_mission(form1.robots[aux1],form3.wos[auxID].node_id);
+         removerobotsrestspot(r_id_curr-1,form1.full_nodelist,form1.robots,form3.wos);
+         Setrobotsrestspot(r_id_curr-1,form1.full_nodelist,form1.robots,form3.wos);
+         t:=length(form1.robots[r_id_curr-1].SubMissions);
+         //form1.robots[aux1].target_node:=form1.ws[ws_ID-1];
+      end;
     end;
   end;
 end;
@@ -648,10 +653,12 @@ begin
      coms_flaws_random:=0;
   end;
   //Setrobotsrestspot(form1.full_nodelist,form1.robots,form3.wos);
-  Application.CreateForm(TFMain, FMain);
-  Application.CreateForm(TFControlo, FControlo);
-  FMain.Show;
+ // Application.CreateForm(TFMain, FMain);                        DESCOMENTADOS
+  Application.CreateForm(TFControlo, FControlo);               // DESCOMENTADOS
+ // FMain.Show;
   FControlo.Show;
+  FRobot_Configuration.Show;
+  FRobot_Configuration.Button2.Visible:=False;
 end;
 
 procedure TForm2.Button3Click(Sender: TObject);
